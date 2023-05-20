@@ -1,5 +1,9 @@
 ### Arthur Lisboa
 
+
+<img src="https://avatars.githubusercontent.com/u/131053411?s=400&v=4" border="1px solid black" align="right">
+
+
 - 🌱 Eu estou aprendendo agora:
 	- C
 	- PHP
