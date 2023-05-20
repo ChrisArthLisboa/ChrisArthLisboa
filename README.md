@@ -1,16 +1,15 @@
-### Hi there 👋
+### Arthur Lisboa
 
-<!--
-**ChrisArthLisboa/ChrisArthLisboa** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+- 🌱 Eu estou aprendendo agora:
+	- C
+	- PHP
+	- Javascript
 
-Here are some ideas to get you started:
+<div>
+	<a href="https://github.com/ChrisArthLisboa">
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+
+</div>
+
+- 📫 How to reach me: 
+
