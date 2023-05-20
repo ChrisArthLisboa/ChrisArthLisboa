@@ -19,5 +19,3 @@
   <img align="center" alt="ChrisArthLisboa-C" height="30" width="40" src="https://raw.githubusercontent.com/jmnote/z-icons/master/svg/c.svg">
 </div>
 
-- 📫 How to reach me: 
-
