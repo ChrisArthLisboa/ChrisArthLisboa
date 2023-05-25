@@ -1,4 +1,4 @@
-### Arthur Lisboa
+### <h1>Arthur Lisboa</h1>
 
 - 🌱 Eu estou aprendendo agora:
 	- C
