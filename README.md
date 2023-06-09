@@ -1,6 +1,6 @@
 ### <h1>Arthur Lisboa</h1>
 
-> #Eu estou aprendendo agora:
+> # Eu estou aprendendo agora:
 > - C
 > - Javascript
 
