@@ -24,6 +24,7 @@
 <div style="display: inline_block" id="db">
 	<img align="center" alt="ChrisArthLisboa-MySql" height="30" width="40" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg" />
 	<img align="center" alt="ChrisArthLisboa-postgres" height="30" width="40" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/postgresql/postgresql-original.svg" />
+	<img align="center" alt="ChrisArthLisboa-sqlite" height="30" width="40" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/sqlite/sqlite-original.svg" />
 </div><br>
 <div style="display: inline_block" id="others">
 	<img align="center" alt="ChrisArthLisboa-gradle" height="30" width="40" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/gradle/gradle-original.svg" />
