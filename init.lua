@@ -16,10 +16,20 @@ local map = vim.api.nvim_set_keymap
 
 vim.g.mapleader = ','
 
-map('n', '<Leader>w', ':w<CR>', { noremap = true, silent = true })
-map('n', '<Leader>f', ':Files<CR>', {noremap = true})
+-- map('n', '<C-U>j', 'v:count1<Down> zz', {noremap = true})
+
+map('n', '<Leader>f', ':Telescope find_files<CR>', {noremap = true})
+map('n', '<Leader>o', ':Telescope oldfiles<CR>', {noremap = true})
+map('n', '<Leader>g', ':Telescope live_grep<CR>', {noremap = true})
+map('n', '<Leader>s', ':Telescope git_status<CR>', {noremap = true})
+
+map('n', '<Leader>e', ':TroubleToggle<CR>', {noremap = true})
+
+map('n', '<Leader>q', ":NERDTreeToggle<CR>", {noremap = true})
+
 map('n', '<Space>', 'za', {noremap = true, silent = true})
 map('n', '<Esc>', ':nohlsearch<CR>', {noremap = true, silent = true})
+
 
 -- Plugins:
 
@@ -41,19 +51,30 @@ vim.opt.rtp:prepend(lazypath)
 local plugins = {
 
 				{ "catppuccin/nvim", name = "catppuccin", priority = 1000 },
+        { "rebelot/kanagawa.nvim" },
         'nvim-lualine/lualine.nvim',
-        'ryanoasis/vim-devicons',
+        "nvim-tree/nvim-web-devicons",
+        'MunifTanjim/nui.nvim',
 
-				"junegunn/fzf",
-				"junegunn/fzf.vim",
+        {"folke/which-key.nvim", event = "VeryLazy",
+          init = function()
+            vim.o.timeout = true
+            vim.o.timeoutlen = 300
+          end, opts = {}
+        },
+
+        'nvim-lua/plenary.nvim',
+        'nvim-telescope/telescope.nvim',
 
 				"mattn/emmet-vim",
         { "nvim-treesitter/nvim-treesitter",  cmd = {"TSUpdate"}},
+        "folke/trouble.nvim",
+        "nvimtools/none-ls.nvim",
+        "preservim/nerdtree",
 
 				"tpope/vim-surround",
 				"mhinz/vim-startify",
 				"tpope/vim-commentary",
-				"jiangmiao/auto-pairs",
 
 				"APZelos/blamer.nvim",
 
@@ -61,17 +82,35 @@ local plugins = {
 
         "williamboman/mason.nvim",
         "williamboman/mason-lspconfig.nvim",
+        { "adalessa/laravel.nvim",
+            cmd = {"Sail", "Artisan", "Composer", "Npm", "Laravel"},
+            event = { "VeryLazy" },
+            config = true
+
+        },
+        "mfussenegger/nvim-dap",
 
         "folke/neodev.nvim",
         "neovim/nvim-lspconfig",
         "hinell/lsp-timeout.nvim",
-        
+        "tpope/vim-dotenv",
+
         'hrsh7th/cmp-nvim-lsp',
         'hrsh7th/nvim-cmp',
+        'hrsh7th/cmp-buffer',
+        'hrsh7th/cmp-path',
 
         'L3MON4D3/LuaSnip',
 
-        'VonHeikemen/lsp-zero.nvim'
+        'VonHeikemen/lsp-zero.nvim',
+
+        "alexghergh/nvim-tmux-navigation",
+
+        "jbyuki/instant.nvim",
+
+        -- Mine:
+        {dir = "~/Documents/Reps/todo_neovim/"},
+        -- {dir = "~/Documentos/win_dev_nvim"},
 }
 
 
@@ -82,6 +121,23 @@ require("lazy").setup(plugins)
 vim.g.blamer_enabled = 1
 vim.g.blamer_delay = 2000
 
+
+-- trouble
+
+require("trouble").setup( {
+    signs = {
+      -- icons / text used for a diagnostic
+      error = " ",
+      warning = " ",
+      hint = " ",
+      information = " ",
+      other = " ",
+    },
+
+    use_diagnostic_signs = true,
+})
+
+-- tree
 
 -- treesitter
 
@@ -112,6 +168,15 @@ end)
 
 -- mason
 
+local on_attach = function (_, _)
+    map('n', '<leader>rn', vim.lsp.buf.rename, {noremap = true})
+    map('n', '<leader>co', vim.lsp.buf.code_action, {noremap = true})
+
+    map('n', 'gd', vim.lsp.buf.definition, {noremap = true})
+    map('n', 'gi', vim.lsp.buf.implementation, {noremap = true})
+    map('n', 'gr', require('telescope').lsp_reference, {noremap = true})
+end
+
 require('mason').setup({
     ui = {
         icons = {
@@ -128,6 +193,7 @@ require('mason-lspconfig').setup({
     lsp_zero.default_setup,
     lua_ls = function()
         require('lspconfig').lua_ls.setup({
+            on_attach = on_attach,
             settings = {
                 Lua = {
                     completion = {
@@ -139,6 +205,7 @@ require('mason-lspconfig').setup({
 	  end,
   }
 })
+
 
 vim.g.lspTimeoutConfig = {
 
@@ -153,16 +220,16 @@ vim.g.lspTimeoutConfig = {
 
 }
 
+
+
 -- cmp
 
 local cmp = require('cmp')
 local cmp_action = require('lsp-zero').cmp_action()
 
-
-
 cmp.setup(
     {
-        
+
         snippet = {
 
             expand = function (args)
@@ -190,11 +257,17 @@ cmp.setup(
 
         sources = cmp.config.sources({
             { name = 'nvim_lsp' },
+            { name = 'buffer' },
+            { name = 'path' },
             { name = 'luasnip' },
-        }), {
-            {name = 'buffer'}
+            { name = 'mason' }
+        }, {
+            { name = 'buffer' },
+            { name = 'path' },
+            { name = 'luasnip' },
+            { name = 'mason' }
+        })
         }
-    }
 
 )
 
@@ -213,15 +286,74 @@ cmp.setup.cmdline({ '/', '?' }, {
     }
 })
 
+-- nvim-dap
+
+local dap = require('dap')
+
+dap.adapters = {
+
+    c = {
+
+        type = 'executable',
+        attach = {
+            pidProperty = "pid",
+            pidSelect = "ask"
+        },
+
+    }
+
+}
+
+dap.configurations = {
+
+    c = {
+
+        type = 'c',
+        request = 'attach',
+        name = "debug",
+        program = "{$file}"
+
+    }
+
+}
+
+
+-- tmux integration
+
+require('nvim-tmux-navigation').setup {
+    disable_when_zoomed = true,
+    keybindings = {
+        left = "<C-h>",
+        down = "<C-j>",
+        up = "<C-k>",
+        right = "<C-l>",
+        last_active = "<C-\\>",
+        next = "<C-Space>",
+    }
+}
+
+-- todo.nvim
+
+require('todo_nvim').setup()
+
 
 -- catppuccin
 
-vim.cmd.colorscheme "catppuccin"
+-- require("catppuccin").setup(
+--     {flavour = "mocha"}
+-- )
+
+-- vim.cmd.colorscheme "catppuccin"
+require('kanagawa').load('dragon')
 
 -- Lua Line
 
 require('lualine').setup(
     {
-        options = {theme = 'horizon'},
+        options = {theme = 'auto'},
     }
 )
+
+-- instant 
+
+vim.g.instant_username = "ChrisArthLisboa"
